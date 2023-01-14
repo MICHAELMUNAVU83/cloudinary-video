@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
+  const [video, setVideo] = useState("");
+  const uploadImage = (files) => {
+    const formData = new FormData();
+
+    formData.append("file", files[0]);
+    formData.append("upload_preset", "e2e6z2lx");
+    fetch("https://api.cloudinary.com/v1_1/dakiak4mc/video/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setVideo(data.secure_url);
+        console.log(data);
+      });
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="file" onChange={(e) => uploadImage(e.target.files)} />
+
+      <video src={video} controls />
     </div>
   );
 }
